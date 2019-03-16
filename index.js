@@ -27,16 +27,46 @@ server.get('/api/zoo', async (req, res) => {
   }
 })
 
-
 server.get('/api/zoo/:id', async(req, res) => {
-  try {
-    const zoo = await db('zoos').where( { id: req.params.id })
-    res.status(200).json(zoo);
-
-  } catch(error) {
-        res.status(500).json(error);
+  try{
+    const singleAnimal = await db('zoos').where({ id: req.params.id }).first();
+    res.status(200).json(singleAnimal)
+  }
+  catch(error){
+    res.status(500).json(error)
   }
 })
+
+
+server.post('/api/zoo', async (req,res) => {
+  try {
+    const newAnimal = await db('zoos').insert(req.body);
+    res.status(200).json(newAnimal);
+  }
+  catch(error) {
+    res.status(500).json(error);
+  }
+})
+
+server.put('/api/zoos/:id', async(req,res)=> {
+  try {
+    const updatedZoo = await db('zoos').where({id: req.params.id}).first()
+    res.status(200).json(updatedZoo)
+  }
+  catch(error){
+    res.status(404).json(error)
+  }
+})
+
+server.delete('/api/zoo/:id'), async(req,res) => {
+  try {
+    const deleteAnimal = await db('zoos').where({id:req.params.id}).del();
+    res.status(200).json(deleteAnimal)
+  }
+  catch(error){
+    res.status(400).json(error)
+  }
+}
 
 const port = 3300;
 server.listen(port, function() {
